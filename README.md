@@ -23,7 +23,7 @@ The new `handle_connection()` method does additional tasks as follows:
 4. Finally, it writes the complete HTTP response back to the client through the TCP stream.
 ![Commit 2 screen capture](/assets/commit2.jpg)
 
-### Commit 3 Reflection
+### Commit 3 Reflection Notes
 **Why Split Responses**
 1. Different HTTP requests need different responses.
 2. The server must correctly respond with appropriate status codes (200 OK, 404 Not Found) based on the request validity.
@@ -33,3 +33,14 @@ The new `handle_connection()` method does additional tasks as follows:
 Previously, there were a lot of code repetition in the codebase, causing code duplication to happen. When we need to change that code logic, then we would need to change a lot whole other part of the codebase, causing the chances of error occuring to become higher.
 
 ![Commit 3 screen capture](/assets/commit3.jpg)
+
+### Commit 4 Reflection Notes
+The page loads slower because of this part of the `handle_connection` method:
+```
+"GET /sleep HTTP/1.1" => {
+    thread::sleep(Duration::from_secs(10));
+    ("HTTP/1.1 200 OK", "hello.html")
+}
+```
+What's happening is that when a client makes a rquest to the `/sleep` endpoint, the server intentionally pauses the execution for a total time of 10 seconds. This simulates a slow response or long-running operation on the server. Only after this 10-second delay does the server return the HTTp response with the contents of hello.html. This also happens to other pages because our program is working on a single thread, causing it to only run once the delay is finished.
+
