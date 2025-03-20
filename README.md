@@ -71,3 +71,6 @@ There are three core components in the ThreadPool implementation:
 - Acquires the mutex lock to check for new jobs
 - WHen a job arrives, the worker executes it
 - After completion, it loops back to wait for more jobs
+
+### Commit Bonus Reflection Notes
+The implementation for `new` is replaced with a similar method called `build`. In this new implementation, however, we are using conditional checks that returns an error value that would help in debugging instead of the assertion error. The build would also return a Result object that would be unwrapped first before its value could be used.
