@@ -44,3 +44,30 @@ The page loads slower because of this part of the `handle_connection` method:
 ```
 What's happening is that when a client makes a rquest to the `/sleep` endpoint, the server intentionally pauses the execution for a total time of 10 seconds. This simulates a slow response or long-running operation on the server. Only after this 10-second delay does the server return the HTTp response with the contents of hello.html. This also happens to other pages because our program is working on a single thread, causing it to only run once the delay is finished.
 
+### Commit 5 Reflection Notes
+There are three core components in the ThreadPool implementation:
+1. ThreadPool: The main structure that contains:
+- workers: A collection of worker threads
+- sender: A channel to send jobs to the workers.
+2. Worker: A warraper around an OS thread that:
+- Has an ID
+- Contains a thread that continuously listens for jobs
+3. Job: A boxed closure that can be executed by a worker
+
+**Execution Flow:**
+1. Initialization (`ThreadPool::new`):
+- Creates a channel for communication
+- Wraps the receiver in an `Arc<Mutex>` for thread-safe sharing 
+- Arc allows multiple thread to the same dat by using atomic operations to track references, ensuring memory safety accross threads.
+- Mutex wrapped inside ensures that only one thread can access the protected data at any given time by requiring threads to acquire a lock before accessing the value.
+- Spawn a specified number of worker threads
+- Each worker get a clone of the receiver
+2. Submission (`ThreadPool::execute`):
+- Client code submits a task as a closure
+- The closure is boxed and becomes a "Job"
+- The job is sent through the channel to the workers
+3. Execution (in `Worker`):
+- Each worker thread runs in a loop
+- Acquires the mutex lock to check for new jobs
+- WHen a job arrives, the worker executes it
+- After completion, it loops back to wait for more jobs
