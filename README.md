@@ -22,3 +22,14 @@ The new `handle_connection()` method does additional tasks as follows:
 - Then includes the fiel contents in the response body.
 4. Finally, it writes the complete HTTP response back to the client through the TCP stream.
 ![Commit 2 screen capture](/assets/commit2.jpg)
+
+### Commit 3 Reflection
+**Why Split Responses**
+1. Different HTTP requests need different responses.
+2. The server must correctly respond with appropriate status codes (200 OK, 404 Not Found) based on the request validity.
+3. Different resources should be served based on what the client requests.
+
+**Why Refactoring is Needed**
+Previously, there were a lot of code repetition in the codebase, causing code duplication to happen. When we need to change that code logic, then we would need to change a lot whole other part of the codebase, causing the chances of error occuring to become higher.
+
+![Commit 3 screen capture](/assets/commit3.jpg)
